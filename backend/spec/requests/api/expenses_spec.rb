@@ -25,6 +25,19 @@ RSpec.describe "Api::Expenses", type: :request do
     end
   end
 
+  describe "GET /api/expenses with year and month" do
+    let!(:in_march) { Expense.create!(description: "In", amount: 10, category: food_category, date: Date.new(2025, 3, 15)) }
+    let!(:in_april) { Expense.create!(description: "Out", amount: 10, category: food_category, date: Date.new(2025, 4, 1)) }
+
+    it "returns only expenses whose date falls in the requested month" do
+      get "/api/expenses", params: { year: 2025, month: 3 }
+
+      ids = JSON.parse(response.body).map { |e| e["id"] }
+      expect(ids).to include(in_march.id)
+      expect(ids).not_to include(in_april.id)
+    end
+  end
+
   describe "POST /api/expenses" do
     context "with valid parameters" do
       let(:valid_params) do
