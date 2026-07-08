@@ -10,6 +10,7 @@ import { useExpenseForm } from "../hooks/useExpenseForm";
 
 interface ExpenseFormProps {
   initialData?: Partial<ExpenseFormData>;
+  categories?: string[];
   onSubmit: (data: ExpenseFormData) => Promise<void>;
   onCancel?: () => void;
   submitLabel?: string;
@@ -17,6 +18,7 @@ interface ExpenseFormProps {
 
 export function ExpenseForm({
   initialData,
+  categories,
   onSubmit,
   onCancel,
   submitLabel = "Add Expense",
@@ -39,7 +41,10 @@ export function ExpenseForm({
     marginTop: "0.5rem",
   };
 
-  const categoryOptions = EXPENSE_CATEGORIES.map((category) => ({
+  const categorySource =
+    categories && categories.length > 0 ? categories : EXPENSE_CATEGORIES;
+
+  const categoryOptions = categorySource.map((category) => ({
     value: category,
     label: category,
   }));
